@@ -12,10 +12,19 @@ const bot = new Client({
     ] 
 });
 
+bot.on('guildMemberAdd', member => {
+    const channel = member.guild.systemChannel; // Récupère le salon système (généralement celui où apparaissent les messages de bienvenue)
+    if (!channel) return; // Vérifie si le salon existe
+
+    const memberCount = member.guild.memberCount; // Récupère le nombre total d'utilisateurs sur le serveur
+    channel.send(`Bienvenue, ${member.user.username} ! Tu es le ${memberCount}ème utilisateur du serveur.`);
+});
+
+
 const queue = new Map();
 
 bot.once('ready', () => {
-    console.log(`${bot.user.tag} is online`);
+    console.log(`${bot.user.tag} est en ligne !`);
 });
 
 bot.on('messageCreate', async message => {
@@ -23,7 +32,7 @@ bot.on('messageCreate', async message => {
     if (!message.content.startsWith('!play')) return;
 
     const voiceChannel = message.member.voice.channel;
-    if (!voiceChannel) return message.reply('Rejoins un salon vocal Discord premièrement.');
+    if (!voiceChannel) return message.reply('Rejoins un salon vocal Discord premièrement');
 
     const args = message.content.split(' ');
     const song = args[1];
